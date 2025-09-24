@@ -1,96 +1,96 @@
-// REEMPLAZA por la URL de tu WebApp de Apps Script cuando la tengas
-const WEBAPP_URL = "REPLACE_WITH_YOUR_WEBAPP_URL";
+// URL de tu Apps Script WebApp
+const API_URL = "https://script.google.com/macros/s/AKfycbzvOoR8WVG_JxjAEozv_QH7p2FNu40zyONrO1tKQ1RETR4Wy6d7hajq94eu4C1LxwyZ5w/exec";
 
-async function api(action, body = {}) {
-  const payload = Object.assign({ action }, body);
-  const res = await fetch(WEBAPP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  return res.json();
-}
+let disponibilidad = [];
 
-async function init() {
+// Cargar disponibilidad desde Google Sheets
+async function cargarDisponibilidad() {
   try {
-    const raw = await api("getAvailability"); // espera: array de rows [Lugar, Fecha, Hora]
-    const rawCitas = await api("getCitas");   // array con filas de la hoja Citas
+    const res = await fetch(`${API_URL}?action=getDisponibilidad`);
+    disponibilidad = await res.json();
 
-    window._availability = raw || [];
-    window._citas = rawCitas || [];
-
-    const lugares = [...new Set(window._availability.map(r => r[0]))];
-    const selLugar = document.getElementById("lugar");
-    selLugar.innerHTML = "<option value=''>-- Selecciona lugar --</option>" + lugares.map(l => `<option value="${l}">${l}</option>`).join("");
-
-    selLugar.addEventListener("change", onLugarChange);
-    document.getElementById("btnReservar").addEventListener("click", reservar);
+    // Llenar el select de lugares
+    const lugares = [...new Set(disponibilidad.map(d => d.lugar))];
+    const lugarSelect = document.getElementById("lugar");
+    lugarSelect.innerHTML = `<option value="">Seleccione un lugar</option>`;
+    lugares.forEach(lugar => {
+      lugarSelect.innerHTML += `<option value="${lugar}">${lugar}</option>`;
+    });
   } catch (err) {
-    showMessage("Error al cargar disponibilidad: " + err.message, false);
+    console.error("Error cargando disponibilidad:", err);
+    alert("No se pudo cargar la disponibilidad. Intenta más tarde.");
   }
 }
 
-function onLugarChange(e) {
-  const lugar = e.target.value;
-  const fechas = [...new Set(window._availability.filter(r => r[0] === lugar).map(r => r[1]))];
-  const selFecha = document.getElementById("fecha");
-  selFecha.disabled = false;
-  selFecha.innerHTML = "<option value=''>-- Selecciona fecha --</option>" + fechas.map(f => `<option value="${f}">${f}</option>`).join("");
-  selFecha.onchange = () => onFechaChange(lugar, selFecha.value);
-  // reset hora
-  document.getElementById("hora").innerHTML = "<option>Seleccione fecha</option>";
-  document.getElementById("hora").disabled = true;
+// Cuando el usuario elige un lugar, mostrar las fechas disponibles
+function actualizarFechas() {
+  const lugar = document.getElementById("lugar").value;
+  const fechas = [...new Set(disponibilidad.filter(d => d.lugar === lugar).map(d => d.fecha))];
+
+  const fechaSelect = document.getElementById("fecha");
+  fechaSelect.innerHTML = `<option value="">Seleccione una fecha</option>`;
+  fechas.forEach(fecha => {
+    fechaSelect.innerHTML += `<option value="${fecha}">${fecha}</option>`;
+  });
+
+  // Limpiar horas
+  document.getElementById("hora").innerHTML = `<option value="">Seleccione una hora</option>`;
 }
 
-function onFechaChange(lugar, fecha) {
-  const horas = window._availability.filter(r => r[0] === lugar && r[1] === fecha).map(r => r[2]);
-  // filtrar horas ocupadas
-  const ocupadas = window._citas.filter(c => c[4] === lugar && c[5] === fecha).map(c => c[6]);
-  const libres = horas.filter(h => !ocupadas.includes(h));
-  const selHora = document.getElementById("hora");
-  selHora.disabled = false;
-  selHora.innerHTML = "<option value=''>-- Selecciona hora --</option>" + libres.map(h => `<option value="${h}">${h}</option>`).join("");
-}
-
-function showMessage(msg, ok = true) {
-  const el = document.getElementById("mensaje");
-  el.textContent = msg;
-  el.style.color = ok ? "green" : "crimson";
-}
-
-async function reservar() {
+// Cuando el usuario elige una fecha, mostrar las horas disponibles
+function actualizarHoras() {
   const lugar = document.getElementById("lugar").value;
   const fecha = document.getElementById("fecha").value;
-  const hora  = document.getElementById("hora").value;
-  const nombre = document.getElementById("nombre").value.trim();
-  const cedula = document.getElementById("cedula").value.trim();
-  const telefono = document.getElementById("telefono").value.trim();
 
-  if (!lugar || !fecha || !hora || !nombre || !cedula || !telefono) {
-    showMessage("Completa todos los campos.", false); return;
+  const horas = disponibilidad
+    .filter(d => d.lugar === lugar && d.fecha === fecha)
+    .map(d => d.hora);
+
+  const horaSelect = document.getElementById("hora");
+  horaSelect.innerHTML = `<option value="">Seleccione una hora</option>`;
+  horas.forEach(hora => {
+    horaSelect.innerHTML += `<option value="${hora}">${hora}</option>`;
+  });
+}
+
+// Reservar una cita
+async function reservarCita(e) {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombre").value;
+  const cedula = document.getElementById("cedula").value;
+  const telefono = document.getElementById("telefono").value;
+  const lugar = document.getElementById("lugar").value;
+  const fecha = document.getElementById("fecha").value;
+  const hora = document.getElementById("hora").value;
+
+  if (!nombre || !cedula || !telefono || !lugar || !fecha || !hora) {
+    alert("Por favor, complete todos los campos.");
+    return;
   }
 
-  const res = await api("bookAppointment", { name: nombre, cedula, phone: telefono, lugar, fecha, hora });
-  if (res && (res.status === "success" || res.success)) {
-    showMessage(res.message || "Cita reservada ✅", true);
-    // recargar disponibilidad y citas para reflejar cambio
-    const raw = await api("getAvailability");
-    const rawCitas = await api("getCitas");
-    window._availability = raw || [];
-    window._citas = rawCitas || [];
-    // limpiar inputs
-    document.getElementById("nombre").value = "";
-    document.getElementById("cedula").value = "";
-    document.getElementById("telefono").value = "";
-    document.getElementById("lugar").value = "";
-    document.getElementById("fecha").innerHTML = "<option>Seleccione lugar</option>";
-    document.getElementById("hora").innerHTML = "<option>Seleccione fecha</option>";
-    document.getElementById("fecha").disabled = true;
-    document.getElementById("hora").disabled = true;
-  } else {
-    showMessage(res.message || "Error al reservar", false);
+  try {
+    const url = `${API_URL}?action=bookCita&nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&lugar=${encodeURIComponent(lugar)}&fecha=${encodeURIComponent(fecha)}&hora=${encodeURIComponent(hora)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.success) {
+      alert("✅ Cita registrada con éxito");
+      document.getElementById("form-cita").reset();
+    } else {
+      alert("⚠️ No se pudo registrar la cita. Intenta más tarde.");
+    }
+  } catch (err) {
+    console.error("Error registrando cita:", err);
+    alert("Ocurrió un error al registrar la cita.");
   }
 }
 
-// arrancar
-window.addEventListener("load", init);
+// Inicializar la página
+window.onload = () => {
+  cargarDisponibilidad();
+
+  document.getElementById("lugar").addEventListener("change", actualizarFechas);
+  document.getElementById("fecha").addEventListener("change", actualizarHoras);
+  document.getElementById("form-cita").addEventListener("submit", reservarCita);
+};
