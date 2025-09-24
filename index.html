@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vida Saludable 7 — Reservar cita</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="logo">VS7</div>
+      <h1>Vida Saludable 7</h1>
+      <p class="subtitle">Agenda tu cita para exámenes</p>
+    </header>
+
+    <section class="card">
+      <label>Lugar
+        <select id="lugar"><option>Cargando...</option></select>
+      </label>
+
+      <label>Fecha
+        <select id="fecha" disabled><option>Seleccione lugar</option></select>
+      </label>
+
+      <label>Hora
+        <select id="hora" disabled><option>Seleccione fecha</option></select>
+      </label>
+
+      <label>Nombre completo
+        <input id="nombre" type="text" placeholder="Tu nombre completo">
+      </label>
+
+      <label>Cédula
+        <input id="cedula" type="text" placeholder="Número de cédula">
+      </label>
+
+      <label>Teléfono
+        <input id="telefono" type="text" placeholder="Ej: 3001234567">
+      </label>
+
+      <button id="btnReservar">Reservar cita</button>
+      <p id="mensaje" class="mensaje"></p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

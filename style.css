@@ -1,0 +1,26 @@
+:root{
+  --verde:#2ecc71;
+  --azul:#3498db;
+  --blanco:#ffffff;
+  --fondo:#f4f6f8;
+  --acento:#f1c40f;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Roboto", system-ui, Arial;
+  background: linear-gradient(180deg, #ecf9f0 0%, #f4f6f8 100%);
+  color:#1b1b1b;
+}
+.wrap{max-width:720px;margin:28px auto;padding:16px}
+header{display:flex;align-items:center;gap:16px}
+.logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--verde),var(--azul));display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+h1{margin:0;font-size:20px}
+.subtitle{margin:4px 0 0;color:#555;font-size:14px}
+.card{background:var(--blanco);padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+label{display:block;margin-bottom:10px;font-size:13px;color:#444}
+select,input{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e9;margin-top:6px}
+button{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--verde),var(--azul));color:white;font-weight:700;cursor:pointer;margin-top:8px}
+button:active{transform:translateY(1px)}
+.mensaje{margin-top:10px;font-weight:600}
+@media (max-width:600px){ .wrap{padding:12px} }
