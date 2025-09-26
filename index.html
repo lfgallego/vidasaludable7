@@ -1,49 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vida Saludable 7 — Reservar cita</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vida Saludable 7 — Reservar cita</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <div class="logo">VS7</div>
-      <h1>Vida Saludable 7</h1>
-      <p class="subtitle">Agenda tu cita para exámenes</p>
-    </header>
+    <div class="loader-container" id="loader-container">
+    <div class="loader"></div>
+  </div>
 
-    <section class="card">
-      <label>Lugar
-        <select id="lugar"><option>Cargando...</option></select>
-      </label>
+  <main class="wrap" id="main-content" style="display: none;">
+    <header>
+      <div class="logo">VS7</div>
+      <h1>Vida Saludable 7</h1>
+      <p class="subtitle">Agenda tu cita para exámenes</p>
+    </header>
 
-      <label>Fecha
-        <select id="fecha" disabled><option>Seleccione lugar</option></select>
-      </label>
+    <form class="card" id="form-cita">
+      <label>Lugar
+        <select id="lugar" required>
+          <option value="">Cargando...</option>
+        </select>
+      </label>
 
-      <label>Hora
-        <select id="hora" disabled><option>Seleccione fecha</option></select>
-      </label>
+      <label>Fecha
+        <select id="fecha" required disabled>
+          <option value="">Seleccione lugar</option>
+        </select>
+      </label>
 
-      <label>Nombre completo
-        <input id="nombre" type="text" placeholder="Tu nombre completo">
-      </label>
+      <label>Hora
+        <select id="hora" required disabled>
+          <option value="">Seleccione fecha</option>
+        </select>
+      </label>
 
-      <label>Cédula
-        <input id="cedula" type="text" placeholder="Número de cédula">
-      </label>
+      <label>Nombre completo
+        <input id="nombre" type="text" placeholder="Tu nombre completo" required>
+      </label>
 
-      <label>Teléfono
-        <input id="telefono" type="text" placeholder="Ej: 3001234567">
-      </label>
+      <label>Cédula
+        <input id="cedula" type="text" placeholder="Número de cédula" required>
+      </label>
 
-      <button id="btnReservar">Reservar cita</button>
-      <p id="mensaje" class="mensaje"></p>
-    </section>
-  </main>
+      <label>Teléfono
+        <input id="telefono" type="tel" placeholder="Ej: 3001234567" required>
+      </label>
 
-  <script src="app.js"></script>
+      <button type="submit" id="btnReservar">
+        Reservar cita
+        <span class="spinner" id="btn-spinner" style="display: none;"></span>
+      </button>
+      <p id="mensaje" class="mensaje"></p>
+    </form>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
