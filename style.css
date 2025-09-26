@@ -1,4 +1,113 @@
-/* ... [Tu código CSS anterior] ... */
+:root {
+  /* Paleta de colores */
+  --primary-color: #2ecc71; /* Verde */
+  --secondary-color: #3498db; /* Azul */
+  --accent-color: #f1c40f; /* Acento */
+  --bg-light: #ecf9f0;
+  --bg-dark: #f4f6f8;
+  --text-dark: #1b1b1b;
+  --text-gray: #444;
+  --text-light: #555;
+  --white: #ffffff;
+  --border-color: #e6e6e9;
+
+  /* Tipografía */
+  --font-roboto: "Roboto", system-ui, Arial;
+}
+
+/* Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-roboto);
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
+  color: var(--text-dark);
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 28px auto;
+  padding: 16px;
+}
+
+/* Encabezado */
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* Tarjeta y formulario */
+.card {
+  background: var(--white);
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+select,
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-top: 6px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: var(--white);
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.mensaje {
+  margin-top: 10px;
+  font-weight: 600;
+}
 
 /* Estilos para la pantalla de carga */
 .loader-container {
@@ -56,4 +165,11 @@
 button[type="submit"].loading {
   cursor: not-allowed;
   opacity: 0.8;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+  .wrap {
+    padding: 12px;
+  }
 }
